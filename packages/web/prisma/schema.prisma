@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model account {
+  id        String   @id(map: "PK_54115ee388cdb6d86bb4bf5b2ea") @db.VarChar
+  network   String
+  address   String
+  factory   String
+  block     Int
+  timestamp DateTime @db.Timestamptz(6)
+  tx_hash   String
+
+  @@index([network], map: "IDX_70324c99f1bbf273d84ee833ea")
+  @@index([address], map: "IDX_83603c168bc00b20544539fbea")
+  @@index([tx_hash], map: "IDX_a238c969ac648c1fb20538cccc")
+  @@index([factory], map: "IDX_ac3e002d68fc535199cf366f1d")
+  @@index([timestamp], map: "IDX_d14b5f9cbfb2159367f384c906")
+  @@index([block], map: "IDX_d4828423b208935d40142ffefd")
+}
+
+model migrations {
+  id        Int    @id(map: "PK_8c82d7f526340ab734260ea46be") @default(autoincrement())
+  timestamp BigInt
+  name      String @db.VarChar
+}
+
+model user_operation {
+  id              String   @id(map: "PK_daae96c3cc5ba909299a40d0e42") @db.VarChar
+  network         String
+  sender          String
+  paymaster       String
+  bundler         String
+  user_op_hash    String
+  success         Boolean
+  actual_gas_cost Decimal  @db.Decimal
+  actual_gas_used Decimal  @db.Decimal
+  block           Int
+  timestamp       DateTime @db.Timestamptz(6)
+  tx_hash         String
+
+  @@index([network], map: "IDX_0c4a89ab1681c26193982d086e")
+  @@index([block], map: "IDX_26c7834b2996d8a3180567a5e6")
+  @@index([sender], map: "IDX_4a24c447292900b2759221a516")
+  @@index([paymaster], map: "IDX_6c0d2eda3db9a917ddc131bfc2")
+  @@index([tx_hash], map: "IDX_9972bbf67ef2e2637db5a2e90a")
+  @@index([timestamp], map: "IDX_a64a8d418e9521d379b898b231")
+  @@index([bundler], map: "IDX_c1b5f34a03acca011a280b37c8")
+  @@index([success], map: "IDX_db6e909c23eefc261fe984c2bc")
+}
