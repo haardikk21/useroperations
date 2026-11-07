@@ -22,6 +22,7 @@ type UserOperation @entity {
   success: Boolean! @index
   actualGasCost: BigInt!
   actualGasUsed: BigInt!
+  bundlerGasCost: BigInt!
 
   block: Int! @index
   timestamp: DateTime! @index

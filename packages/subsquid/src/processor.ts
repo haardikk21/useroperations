@@ -41,10 +41,13 @@ export const processorHandler = async (ctx: Context, networkName: string) => {
       }
 
       if (log.topics[0] === entrypointAbi.events.UserOperationEvent.topic) {
-        const bundlerAddress = log.transaction?.from;
-        if (!bundlerAddress) continue;
+        if (!log.transaction) continue;
+        const bundlerAddress = log.transaction.from;
 
         let decodedUserOp = entrypointAbi.events.UserOperationEvent.decode(log);
+
+        const bundlerGasCost =
+          log.transaction.effectiveGasPrice! * log.transaction.gasUsed!;
 
         const userOperation = new UserOperation({
           id: log.id,
@@ -55,8 +58,9 @@ export const processorHandler = async (ctx: Context, networkName: string) => {
           bundler: bundlerAddress,
 
           userOpHash: decodedUserOp.userOpHash,
-          actualGasCost: decodedUserOp.actualGasCost,
+          actualGasCost: decodedUserOp.actualGasCost, // Fee Paid by Wallet Owner
           actualGasUsed: decodedUserOp.actualGasUsed,
+          bundlerGasCost: bundlerGasCost, // Fee Paid by Bundler
 
           success: decodedUserOp.success,
 
@@ -95,6 +99,8 @@ export const getProcessor = (params: GetProcessorParams) => {
       },
       transaction: {
         from: true,
+        effectiveGasPrice: true,
+        gasUsed: true,
       },
     })
     .setBlockRange({

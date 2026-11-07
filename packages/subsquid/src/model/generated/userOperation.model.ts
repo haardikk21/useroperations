@@ -39,6 +39,9 @@ export class UserOperation {
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
     actualGasUsed!: bigint
 
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+    bundlerGasCost!: bigint
+
     @Index_()
     @Column_("int4", {nullable: false})
     block!: number
